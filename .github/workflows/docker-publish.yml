@@ -34,11 +34,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image (no push) + cache
+      - name: Build image (for Trivy scan only)
         uses: docker/build-push-action@v5
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           load: true
           push: false
           tags: ghcr.io/${{ github.repository }}:latest
@@ -53,7 +53,7 @@ jobs:
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
 
-      - name: Push image to GHCR (if scan passed)
+      - name: Push multiarch image to GHCR
         uses: docker/build-push-action@v5
         with:
           context: .
